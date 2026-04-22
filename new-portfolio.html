@@ -1,0 +1,1090 @@
+<!DOCTYPE html>
+<html lang="en" class="lenis lenis-smooth">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ENERGY | Flawless Journey</title>
+
+    <!-- Premium Typography -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Syncopate:wght@300;400;700;900&family=Manrope:wght@200;400;600;800&family=Space+Mono:wght@400;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              brand: {
+                dark: "#030305" /* Deeper, richer black */,
+                blue: "#001B4D",
+                red: "#E10600",
+                accent: "#FFCC00",
+                silver: "#E0E0E0",
+              },
+            },
+            fontFamily: {
+              display: ["Syncopate", "sans-serif"],
+              body: ["Manrope", "sans-serif"],
+              mono: ["Space Mono", "monospace"],
+            },
+          },
+        },
+      };
+    </script>
+
+    <style>
+      /* Lenis Smooth Scroll Base */
+      html.lenis {
+        height: auto;
+      }
+      .lenis.lenis-smooth {
+        scroll-behavior: auto;
+      }
+      .lenis.lenis-stopped {
+        overflow: hidden;
+      }
+
+      body {
+        background-color: #030305;
+        color: #ffffff;
+        overflow-x: hidden;
+        cursor: none;
+      }
+      ::-webkit-scrollbar {
+        display: none;
+      }
+      ::selection {
+        background: #e10600;
+        color: white;
+      }
+
+      /* Magical / Technical Overlays */
+      .noise {
+        position: fixed;
+        inset: 0;
+        z-index: 9998;
+        pointer-events: none;
+        opacity: 0.05;
+        mix-blend-mode: overlay;
+        background: url('data:image/svg+xml;utf8,%3Csvg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"%3E%3Cfilter id="noiseFilter"%3E%3CfeTurbulence type="fractalNoise" baseFrequency="0.85" numOctaves="3" stitchTiles="stitch"/%3E%3C/filter%3E%3Crect width="100%25" height="100%25" filter="url(%23noiseFilter)"/%3E%3C/svg%3E');
+      }
+
+      .tech-grid {
+        position: fixed;
+        inset: 0;
+        z-index: 0;
+        pointer-events: none;
+        opacity: 0.03;
+        background-image: linear-gradient(
+            to right,
+            #ffffff 1px,
+            transparent 1px
+          ),
+          linear-gradient(to bottom, #ffffff 1px, transparent 1px);
+        background-size: 100px 100px;
+        mask-image: radial-gradient(circle at center, black, transparent 80%);
+        -webkit-mask-image: radial-gradient(
+          circle at center,
+          black,
+          transparent 80%
+        );
+      }
+
+      /* Custom Cursor with Magical Glow */
+      .cursor-dot {
+        width: 4px;
+        height: 4px;
+        background: white;
+        border-radius: 50%;
+        position: fixed;
+        pointer-events: none;
+        z-index: 10000;
+        transform: translate(-50%, -50%);
+        mix-blend-mode: difference;
+      }
+      .cursor-glow {
+        width: 300px;
+        height: 300px;
+        background: radial-gradient(
+          circle,
+          rgba(255, 255, 255, 0.05) 0%,
+          transparent 70%
+        );
+        border-radius: 50%;
+        position: fixed;
+        pointer-events: none;
+        z-index: 9997;
+        transform: translate(-50%, -50%);
+        mix-blend-mode: screen;
+        transition: width 0.3s, height 0.3s;
+      }
+
+      /* Structural Framing (The "Porsche" editorial look) */
+      .frame-line-left {
+        position: fixed;
+        left: 40px;
+        top: 0;
+        bottom: 0;
+        width: 1px;
+        background: rgba(255, 255, 255, 0.05);
+        z-index: 45;
+        pointer-events: none;
+      }
+      .frame-line-right {
+        position: fixed;
+        right: 40px;
+        top: 0;
+        bottom: 0;
+        width: 1px;
+        background: rgba(255, 255, 255, 0.05);
+        z-index: 45;
+        pointer-events: none;
+      }
+      .vertical-text-left {
+        position: fixed;
+        left: 10px;
+        top: 50%;
+        transform: translateY(-50%) rotate(-180deg);
+        writing-mode: vertical-rl;
+        z-index: 45;
+        opacity: 0.3;
+        pointer-events: none;
+      }
+      .vertical-text-right {
+        position: fixed;
+        right: 10px;
+        top: 50%;
+        transform: translateY(-50%);
+        writing-mode: vertical-rl;
+        z-index: 45;
+        opacity: 0.3;
+        pointer-events: none;
+      }
+
+      /* Master Asset */
+      #global-can-container {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        pointer-events: none;
+        z-index: 40;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      #the-can {
+        height: 70vh;
+        width: 30vh;
+        position: relative;
+        transform-origin: center center;
+        will-change: transform, filter;
+        filter: drop-shadow(0 30px 60px rgba(0, 0, 0, 0.9));
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      /* Typography & Layout Utilities */
+      .text-outline {
+        color: transparent;
+        -webkit-text-stroke: 1px rgba(255, 255, 255, 0.15);
+      }
+      .text-outline-thick {
+        color: transparent;
+        -webkit-text-stroke: 2px rgba(255, 255, 255, 0.8);
+      }
+      .blend-diff {
+        mix-blend-mode: difference;
+      }
+
+      .glass-panel {
+        background: rgba(255, 255, 255, 0.01);
+        backdrop-filter: blur(24px);
+        -webkit-backdrop-filter: blur(24px);
+        border: 1px solid rgba(255, 255, 255, 0.05);
+        box-shadow: 0 30px 60px rgba(0, 0, 0, 0.4);
+      }
+
+      .magical-orb {
+        position: absolute;
+        border-radius: 50%;
+        filter: blur(120px);
+        z-index: 0;
+        pointer-events: none;
+      }
+
+      /* Scrolling Marquee */
+      .marquee-wrapper {
+        width: 100%;
+        overflow: hidden;
+        white-space: nowrap;
+      }
+      .marquee-inner {
+        display: inline-block;
+        animation: marquee 20s linear infinite;
+      }
+      @keyframes marquee {
+        0% {
+          transform: translateX(0%);
+        }
+        100% {
+          transform: translateX(-50%);
+        }
+      }
+    </style>
+  </head>
+  <body class="font-body antialiased">
+    <!-- Global HUD & Overlays -->
+    <div class="noise"></div>
+    <div class="tech-grid"></div>
+    <div class="cursor-dot"></div>
+    <div class="cursor-glow"></div>
+
+    <div class="frame-line-left hidden md:block"></div>
+    <div class="frame-line-right hidden md:block"></div>
+    <div
+      class="vertical-text-left hidden md:block font-mono text-[9px] tracking-[0.4em] uppercase"
+    >
+      Sys.Init_// V.2.4.9 :: Coordinate Alpha
+    </div>
+    <div
+      class="vertical-text-right hidden md:block font-mono text-[9px] tracking-[0.4em] uppercase"
+    >
+      Energy Synthesis Protocol // Active
+    </div>
+
+    <!-- GLOBAL ASSET (The Flawless PNG Journey) -->
+    <div id="global-can-container">
+      <div id="the-can">
+        <img
+          src="https://www.image2url.com/r2/default/images/1776838565808-6e7cde79-f01a-4598-8b15-3d7107b9333e.png"
+          alt="Energy Can"
+          style="
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            pointer-events: none;
+            transform: scale(2.2);
+          "
+        />
+      </div>
+    </div>
+
+    <!-- GLOBAL NAV -->
+    <nav
+      class="fixed top-0 left-0 w-full z-50 px-12 py-8 flex justify-between items-center blend-diff"
+    >
+      <div class="font-display font-black text-3xl tracking-[0.2em] text-white">
+        N<span class="text-brand-red">R</span>G<span
+          class="text-xs absolute -mt-2 ml-1 text-brand-red"
+          >+</span
+        >
+      </div>
+      <div
+        class="hidden md:flex gap-16 font-mono text-[10px] font-bold tracking-[0.4em] uppercase text-white"
+      >
+        <span
+          class="hover-target relative group cursor-pointer overflow-hidden pb-1"
+        >
+          <span
+            class="block transition-transform duration-500 group-hover:-translate-y-full"
+            >Genesis</span
+          >
+          <span
+            class="absolute top-0 left-0 text-brand-red transition-transform duration-500 translate-y-full group-hover:translate-y-0"
+            >Genesis</span
+          >
+        </span>
+        <span
+          class="hover-target relative group cursor-pointer overflow-hidden pb-1"
+        >
+          <span
+            class="block transition-transform duration-500 group-hover:-translate-y-full"
+            >Architecture</span
+          >
+          <span
+            class="absolute top-0 left-0 text-brand-red transition-transform duration-500 translate-y-full group-hover:translate-y-0"
+            >Architecture</span
+          >
+        </span>
+        <span
+          class="hover-target relative group cursor-pointer overflow-hidden pb-1"
+        >
+          <span
+            class="block transition-transform duration-500 group-hover:-translate-y-full"
+            >Kinetics</span
+          >
+          <span
+            class="absolute top-0 left-0 text-brand-red transition-transform duration-500 translate-y-full group-hover:translate-y-0"
+            >Kinetics</span
+          >
+        </span>
+      </div>
+    </nav>
+
+    <!-- SECTION 1: HERO (Magical, Complex, Layered) -->
+    <section
+      id="s-hero"
+      class="relative w-full h-screen flex flex-col items-center justify-center overflow-hidden bg-brand-dark"
+    >
+      <!-- Magical Orbs -->
+      <div
+        class="magical-orb w-[60vw] h-[60vw] bg-brand-blue/30 top-[-20%] left-[-10%] animate-[pulse_8s_ease-in-out_infinite]"
+      ></div>
+      <div
+        class="magical-orb w-[40vw] h-[40vw] bg-brand-red/10 bottom-[-10%] right-[-10%] animate-[pulse_10s_ease-in-out_infinite_reverse]"
+      ></div>
+
+      <div
+        class="absolute inset-0 z-10 bg-gradient-to-t from-brand-dark via-transparent to-transparent"
+      ></div>
+
+      <!-- Massive Staggered Text (z-50) -->
+      <div
+        class="relative w-full flex flex-col justify-center items-center px-6 md:px-24 pointer-events-none z-50 gap-4 mt-[-5vh]"
+      >
+        <h1
+          class="hero-text font-display font-black text-[14vw] leading-[0.75] tracking-tighter text-outline drop-shadow-2xl w-full text-left ml-[10vw]"
+        >
+          ABSOLUTE
+        </h1>
+        <h1
+          class="hero-text font-display font-black text-[14vw] leading-[0.75] tracking-tighter text-white drop-shadow-[0_0_80px_rgba(255,255,255,0.2)] w-full text-right mr-[10vw]"
+        >
+          FORCE
+        </h1>
+      </div>
+
+      <div
+        class="absolute bottom-16 left-1/2 -translate-x-1/2 z-50 flex flex-col items-center gap-6 opacity-60"
+      >
+        <div
+          class="font-mono text-[9px] tracking-[0.5em] uppercase text-brand-accent animate-pulse"
+        >
+          System Ready
+        </div>
+        <div
+          class="w-[1px] h-16 bg-gradient-to-b from-white via-white/50 to-transparent"
+        ></div>
+      </div>
+    </section>
+
+    <!-- SECTION 2: MANIFESTO (Glassmorphism, High-End Layout) -->
+    <section
+      id="s-manifesto"
+      class="relative w-full min-h-screen flex items-center z-30 bg-brand-dark py-32 overflow-hidden"
+    >
+      <!-- Background Typography -->
+      <div
+        class="absolute top-1/2 left-0 -translate-y-1/2 font-display font-black text-[30vw] text-white/[0.02] whitespace-nowrap pointer-events-none select-none"
+      >
+        THE EDGE
+      </div>
+
+      <div
+        class="w-full max-w-[1400px] mx-auto px-12 grid grid-cols-1 md:grid-cols-12 gap-8 z-50 pointer-events-none relative"
+      >
+        <div class="col-span-1 md:col-span-4"><!-- Spacer for Can --></div>
+
+        <div class="col-span-1 md:col-span-8 flex flex-col justify-center">
+          <div
+            class="glass-panel p-12 md:p-16 rounded-[2rem] manifesto-elem relative overflow-hidden pointer-events-auto group"
+          >
+            <div
+              class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-brand-red to-brand-accent transform origin-left scale-x-0 group-hover:scale-x-100 transition-transform duration-700 ease-out"
+            ></div>
+
+            <div
+              class="font-mono text-[10px] tracking-[0.3em] uppercase text-brand-red mb-8"
+            >
+              01 / The Genesis Directive
+            </div>
+            <h2
+              class="font-display font-black text-4xl md:text-6xl lg:text-7xl leading-[1] tracking-tighter mb-10 text-white group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-white group-hover:to-gray-500 transition-all duration-700"
+            >
+              ENGINEERED<br /><span class="text-outline">BEYOND</span><br />THE
+              APEX.
+            </h2>
+
+            <div class="flex flex-col md:flex-row gap-8 items-start">
+              <div
+                class="w-12 h-[1px] bg-white/30 mt-3 hidden md:block shrink-0"
+              ></div>
+              <p
+                class="font-body text-base md:text-lg text-white/50 leading-loose max-w-xl font-light"
+              >
+                We do not synthesize beverages; we construct liquid
+                architecture. Formulated in the precise laboratories of Austria
+                to push cognitive friction and physical limits beyond the
+                standard human capability baseline.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 3: THE LAB (Holographic / Blueprint Vibe) -->
+    <section id="s-lab" class="relative w-full h-[250vh] bg-[#050508] z-20">
+      <div
+        class="sticky top-0 h-screen w-full flex items-center justify-center overflow-hidden"
+      >
+        <!-- Complex Lab HUD -->
+        <div class="absolute inset-0 z-10 tech-grid opacity-10"></div>
+        <div
+          class="magical-orb w-[70vw] h-[70vw] bg-[#00205B]/20 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 mix-blend-screen pointer-events-none"
+        ></div>
+
+        <!-- Rotating Holographic Rings -->
+        <div
+          class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[45vw] h-[45vw] border-[0.5px] border-brand-blue/30 rounded-full animate-[spin_40s_linear_infinite] border-dashed pointer-events-none z-10"
+        ></div>
+        <div
+          class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[60vw] h-[60vw] border-[0.5px] border-brand-red/10 rounded-full animate-[spin_30s_linear_infinite_reverse] pointer-events-none z-10"
+        ></div>
+
+        <div class="absolute top-12 right-12 text-right z-50">
+          <div
+            class="font-mono text-[10px] text-brand-blue tracking-[0.4em] uppercase mb-1"
+          >
+            Architecture Overview
+          </div>
+          <div
+            class="font-display font-black text-2xl text-white opacity-80 tracking-widest"
+          >
+            SYNTHESIS
+          </div>
+        </div>
+
+        <!-- Glassmorphic UI Cards -->
+        <div
+          class="absolute inset-0 max-w-[1400px] mx-auto px-12 z-50 pointer-events-none"
+        >
+          <div
+            id="card-1"
+            class="absolute top-[20%] left-[5%] md:left-[10%] max-w-xs glass-panel p-6 rounded-2xl border-l-2 border-l-brand-red"
+          >
+            <div class="flex justify-between items-center mb-4">
+              <h4 class="font-display font-black text-xl text-white">
+                CAFFEINE
+              </h4>
+              <span class="font-mono text-[9px] text-brand-red tracking-widest"
+                >ACT_01</span
+              >
+            </div>
+            <p
+              class="font-body text-xs font-light text-white/60 leading-relaxed"
+            >
+              Immediate nervous system activation. Engineered to eradicate
+              cognitive latency and optimize raw reaction thresholds.
+            </p>
+          </div>
+
+          <div
+            id="card-2"
+            class="absolute bottom-[20%] right-[5%] md:right-[10%] max-w-xs glass-panel p-6 rounded-2xl border-r-2 border-r-brand-blue text-right"
+          >
+            <div
+              class="flex justify-between items-center mb-4 flex-row-reverse"
+            >
+              <h4 class="font-display font-black text-xl text-white">
+                TAURINE
+              </h4>
+              <span class="font-mono text-[9px] text-brand-blue tracking-widest"
+                >END_02</span
+              >
+            </div>
+            <p
+              class="font-body text-xs font-light text-white/60 leading-relaxed"
+            >
+              Synthesized amino acid matrix focusing on cardiovascular endurance
+              sustainment and profound skeletal muscle resilience.
+            </p>
+          </div>
+
+          <div
+            id="card-3"
+            class="absolute top-[35%] right-[5%] md:right-[15%] max-w-xs glass-panel p-6 rounded-2xl border-t-2 border-t-brand-accent"
+          >
+            <div class="flex justify-between items-center mb-4">
+              <span
+                class="font-mono text-[9px] text-brand-accent tracking-widest"
+                >MET_03</span
+              >
+              <h4 class="font-display font-black text-xl text-white">
+                B-COMPLEX
+              </h4>
+            </div>
+            <p
+              class="font-body text-xs font-light text-white/60 leading-relaxed"
+            >
+              Catalytic micronutrients designed to aggressively metabolize basic
+              nutrients into pure, sustainable kinetic output.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 4: HORIZONTAL ACTION (Cinematic Overlays) -->
+    <section id="s-sports" class="relative bg-brand-dark h-screen z-30">
+      <div id="sports-container" class="h-full flex w-[300vw]">
+        <div
+          class="w-screen h-full relative flex-shrink-0 flex items-center justify-start px-12 md:px-24 overflow-hidden group"
+        >
+          <img
+            src="https://images.unsplash.com/photo-1541348263662-e06836264be8?q=80&w=2069&auto=format&fit=crop"
+            class="absolute inset-0 w-full h-full object-cover opacity-40 mix-blend-luminosity transform scale-110 group-hover:scale-100 transition-transform duration-[2s] ease-out"
+          />
+          <div
+            class="absolute inset-0 bg-gradient-to-r from-brand-dark via-transparent to-brand-dark"
+          ></div>
+          <div class="relative z-50">
+            <div class="font-mono text-xs text-brand-red tracking-[0.4em] mb-4">
+              Phase One
+            </div>
+            <h2
+              class="font-display font-black text-[10vw] leading-[0.8] text-white mix-blend-overlay"
+            >
+              VELOCITY
+            </h2>
+          </div>
+        </div>
+
+        <div
+          class="w-screen h-full relative flex-shrink-0 flex items-center justify-center overflow-hidden bg-[#E10600]"
+        >
+          <div
+            class="absolute inset-0 tech-grid opacity-20 mix-blend-screen"
+          ></div>
+          <h2
+            class="absolute top-1/4 left-12 md:left-24 z-50 font-display font-black text-5xl md:text-8xl text-outline-thick opacity-30"
+          >
+            GRAVITY<br />IS A<br />MYTH
+          </h2>
+        </div>
+
+        <div
+          class="w-screen h-full relative flex-shrink-0 flex items-center justify-end px-12 md:px-24 overflow-hidden group"
+        >
+          <img
+            src="https://images.unsplash.com/photo-1541781257127-96a928ba49cb?q=80&w=2070&auto=format&fit=crop"
+            class="absolute inset-0 w-full h-full object-cover opacity-40 mix-blend-luminosity transform scale-110 group-hover:scale-100 transition-transform duration-[2s] ease-out"
+          />
+          <div
+            class="absolute inset-0 bg-gradient-to-l from-brand-dark via-transparent to-brand-dark"
+          ></div>
+          <div class="relative z-50 text-right">
+            <div
+              class="font-mono text-xs text-brand-blue tracking-[0.4em] mb-4"
+            >
+              Phase Two
+            </div>
+            <h2
+              class="font-display font-black text-[10vw] leading-[0.8] text-white mix-blend-overlay"
+            >
+              CONTROL
+            </h2>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 5: CULTURE / RHYTHM (Soundwave Magic) -->
+    <section
+      id="s-music"
+      class="relative w-full h-screen bg-[#020202] z-20 flex items-center justify-center overflow-hidden"
+    >
+      <!-- Equalizer Background Effect -->
+      <div
+        class="absolute bottom-0 left-0 w-full h-1/2 flex items-end justify-between px-4 opacity-10 z-0"
+      >
+        <div
+          class="w-[2%] bg-brand-red h-[30%] animate-[ping_1s_ease-in-out_infinite]"
+        ></div>
+        <div
+          class="w-[2%] bg-white h-[80%] animate-[ping_1.2s_ease-in-out_infinite_0.1s]"
+        ></div>
+        <div
+          class="w-[2%] bg-brand-blue h-[50%] animate-[ping_0.9s_ease-in-out_infinite_0.2s]"
+        ></div>
+        <div
+          class="w-[2%] bg-white h-[90%] animate-[ping_1.5s_ease-in-out_infinite_0.3s]"
+        ></div>
+        <div
+          class="w-[2%] bg-brand-accent h-[40%] animate-[ping_1.1s_ease-in-out_infinite_0.1s]"
+        ></div>
+        <div
+          class="w-[2%] bg-white h-[70%] animate-[ping_1.3s_ease-in-out_infinite_0.4s]"
+        ></div>
+        <div
+          class="w-[2%] bg-brand-red h-[60%] animate-[ping_1s_ease-in-out_infinite_0.2s]"
+        ></div>
+      </div>
+
+      <div
+        class="absolute inset-0 opacity-20 bg-[url('https://images.unsplash.com/photo-1470229722913-7c090b332da8?q=80&w=2070&auto=format&fit=crop')] bg-cover bg-center mix-blend-screen filter grayscale contrast-150"
+      ></div>
+      <div
+        class="absolute inset-0 bg-radial-gradient from-transparent to-[#020202]"
+      ></div>
+
+      <div
+        class="relative z-50 w-full marquee-wrapper overflow-hidden pointer-events-none opacity-20"
+      >
+        <div
+          class="marquee-inner font-display font-black text-[20vw] leading-none text-white mix-blend-overlay flex gap-12"
+        >
+          <span>RHYTHM</span><span>FREQUENCY</span><span>RHYTHM</span
+          ><span>FREQUENCY</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 6: SUSTAINABILITY (Emerald Glow, Overlapping Glass) -->
+    <section
+      id="s-eco"
+      class="relative w-full min-h-screen bg-[#0A0D0B] flex items-center z-30 py-32 overflow-hidden"
+    >
+      <div
+        class="magical-orb w-[50vw] h-[50vw] bg-[#00FF66]/10 top-1/2 left-1/4 -translate-y-1/2 mix-blend-screen"
+      ></div>
+
+      <div
+        class="w-full max-w-[1400px] mx-auto px-12 grid grid-cols-1 md:grid-cols-2 gap-16 z-50 pointer-events-none relative"
+      >
+        <div
+          class="flex flex-col justify-center glass-panel p-12 md:p-16 rounded-[2rem] border-l-4 border-l-[#00FF66]/50"
+        >
+          <div class="flex items-center gap-4 mb-8">
+            <div
+              class="w-3 h-3 rounded-full bg-[#00FF66] animate-pulse shadow-[0_0_20px_#00FF66]"
+            ></div>
+            <div
+              class="font-mono text-[10px] tracking-[0.4em] uppercase text-[#00FF66]"
+            >
+              Infinite Loop Concept
+            </div>
+          </div>
+
+          <h2
+            class="font-display font-black text-4xl md:text-6xl leading-[1] tracking-tighter mb-8 text-white pointer-events-auto"
+          >
+            A LIFE BEYOND<br /><span class="text-outline text-[#00FF66]/30"
+              >THE DROP.</span
+            >
+          </h2>
+
+          <div class="space-y-6">
+            <p
+              class="font-body text-sm md:text-base text-white/60 leading-loose pointer-events-auto font-light"
+            >
+              We do not consume; we cycle. Our aluminum is an elemental force,
+              completely immune to degradation.
+            </p>
+            <div
+              class="grid grid-cols-2 gap-8 border-t border-white/10 pt-6 pointer-events-auto"
+            >
+              <div>
+                <div class="font-display font-black text-3xl text-white mb-1">
+                  100<span class="text-sm">%</span>
+                </div>
+                <div
+                  class="font-mono text-[8px] tracking-[0.2em] text-white/40 uppercase"
+                >
+                  Recyclable Base
+                </div>
+              </div>
+              <div>
+                <div
+                  class="font-display font-black text-3xl text-[#00FF66] mb-1"
+                >
+                  -95<span class="text-sm">%</span>
+                </div>
+                <div
+                  class="font-mono text-[8px] tracking-[0.2em] text-[#00FF66]/60 uppercase"
+                >
+                  Energy Deficit
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div><!-- Spacer --></div>
+      </div>
+    </section>
+
+    <!-- SECTION 7: FOOTER (Cinematic Ending) -->
+    <footer
+      id="s-footer"
+      class="relative w-full h-screen bg-[#010101] flex flex-col justify-between overflow-hidden z-20"
+    >
+      <!-- Massive Red Aura -->
+      <div
+        class="magical-orb w-[80vw] h-[80vw] bg-brand-red/20 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 mix-blend-screen pointer-events-none z-0 transition-all duration-1000"
+        id="footer-aura"
+      ></div>
+
+      <div
+        class="relative z-50 w-full h-full flex flex-col items-center justify-center mt-20 pointer-events-none"
+      >
+        <div
+          class="absolute inset-0 flex items-center justify-center overflow-hidden pointer-events-none"
+        >
+          <h2
+            class="font-display font-black text-[22vw] leading-none text-outline opacity-10 z-30 pointer-events-none whitespace-nowrap"
+          >
+            E L E V A T E
+          </h2>
+        </div>
+
+        <div
+          class="absolute bottom-40 z-50 pointer-events-auto flex flex-col items-center"
+        >
+          <div
+            class="font-mono text-[10px] tracking-[0.5em] text-white/50 mb-8 uppercase"
+          >
+            Awaiting Activation
+          </div>
+          <button
+            class="hover-target relative group overflow-hidden bg-white text-black font-display font-black px-16 py-6 rounded-full text-xl tracking-[0.2em] uppercase transition-all duration-500 shadow-[0_0_40px_rgba(255,255,255,0.2)] hover:shadow-[0_0_80px_rgba(225,6,0,0.6)]"
+          >
+            <span
+              class="relative z-10 group-hover:text-white transition-colors duration-300"
+              >Acquire</span
+            >
+            <div
+              class="absolute inset-0 bg-brand-red w-full h-full transform scale-x-0 group-hover:scale-x-100 origin-left transition-transform duration-500 ease-out z-0"
+            ></div>
+          </button>
+        </div>
+      </div>
+
+      <div
+        class="relative z-50 flex flex-col md:flex-row justify-between items-center p-12 text-[9px] font-mono tracking-[0.4em] text-white/30 uppercase border-t border-white/5 bg-[#010101]"
+      >
+        <span>© 2026 Tremendous Execution</span>
+        <div class="flex gap-10 mt-4 md:mt-0">
+          <a href="#" class="hover-target hover:text-white transition-colors"
+            >Privacy Data</a
+          >
+          <a href="#" class="hover-target hover:text-white transition-colors"
+            >Legal Framework</a
+          >
+        </div>
+      </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/studio-freight/lenis@1.0.29/bundled/lenis.min.js"></script>
+
+    <script>
+      // --- Custom Magical Cursor ---
+      const cursorDot = document.querySelector(".cursor-dot");
+      const cursorGlow = document.querySelector(".cursor-glow");
+      const targets = document.querySelectorAll(".hover-target");
+
+      window.addEventListener("mousemove", (e) => {
+        cursorDot.style.left = `${e.clientX}px`;
+        cursorDot.style.top = `${e.clientY}px`;
+        cursorGlow.animate(
+          { left: `${e.clientX}px`, top: `${e.clientY}px` },
+          { duration: 800, fill: "forwards", easing: "ease-out" },
+        );
+      });
+
+      targets.forEach((t) => {
+        t.addEventListener("mouseenter", () => {
+          cursorGlow.style.background =
+            "radial-gradient(circle, rgba(225,6,0,0.15) 0%, transparent 70%)";
+          cursorGlow.style.width = "400px";
+          cursorGlow.style.height = "400px";
+          cursorDot.style.backgroundColor = "#E10600";
+          cursorDot.style.transform = "translate(-50%, -50%) scale(2)";
+        });
+        t.addEventListener("mouseleave", () => {
+          cursorGlow.style.background =
+            "radial-gradient(circle, rgba(255,255,255,0.05) 0%, transparent 70%)";
+          cursorGlow.style.width = "300px";
+          cursorGlow.style.height = "300px";
+          cursorDot.style.backgroundColor = "white";
+          cursorDot.style.transform = "translate(-50%, -50%) scale(1)";
+        });
+      });
+
+      // --- Lenis Smooth Scroll ---
+      const lenis = new Lenis({
+        duration: 1.5, // Even smoother for luxury feel
+        easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+      });
+      lenis.on("scroll", ScrollTrigger.update);
+      gsap.ticker.add((time) => {
+        lenis.raf(time * 1000);
+      });
+      gsap.ticker.lagSmoothing(0);
+      gsap.registerPlugin(ScrollTrigger);
+
+      // ==========================================
+      // MASTER CAN ANIMATION LOGIC (FLAWLESS & PREMIUM)
+      // ==========================================
+      const can = document.getElementById("the-can");
+
+      // Initial State (Hero Section - Ultra Massive)
+      gsap.set(can, {
+        scale: 1.6,
+        x: "0vw",
+        y: "2vh",
+        rotation: 0,
+        filter:
+          "drop-shadow(0 40px 60px rgba(0,0,0,0.9)) drop-shadow(0 0 40px rgba(255,255,255,0.1))",
+      });
+
+      // Hero Parallax Text (Splitting left/right)
+      const heroTexts = document.querySelectorAll(".hero-text");
+      gsap.to(heroTexts[0], {
+        scrollTrigger: {
+          trigger: "#s-hero",
+          start: "top top",
+          end: "bottom top",
+          scrub: 1,
+        },
+        x: -200,
+        opacity: 0,
+      });
+      gsap.to(heroTexts[1], {
+        scrollTrigger: {
+          trigger: "#s-hero",
+          start: "top top",
+          end: "bottom top",
+          scrub: 1,
+        },
+        x: 200,
+        opacity: 0,
+      });
+
+      // -- ANIMATION 1: Hero to Manifesto --
+      gsap.to(can, {
+        scrollTrigger: {
+          trigger: "#s-manifesto",
+          start: "top bottom",
+          end: "top center",
+          scrub: 1,
+        },
+        scale: 0.9,
+        x: "-25vw",
+        y: "5vh",
+        rotation: -12,
+        filter:
+          "drop-shadow(0 20px 40px rgba(0,0,0,0.8)) drop-shadow(0 0 20px rgba(225,6,0,0.1))",
+        ease: "power2.inOut",
+      });
+
+      gsap.from(".manifesto-elem", {
+        scrollTrigger: {
+          trigger: "#s-manifesto",
+          start: "top 70%",
+          end: "center center",
+          scrub: 1,
+        },
+        opacity: 0,
+        y: 50,
+        filter: "blur(10px)",
+        duration: 1,
+      });
+
+      // -- ANIMATION 2: Manifesto to Lab --
+      gsap.to(can, {
+        scrollTrigger: {
+          trigger: "#s-lab",
+          start: "top bottom",
+          end: "top center",
+          scrub: 1,
+          immediateRender: false,
+        },
+        scale: 1.25,
+        x: "0vw",
+        y: "0vh",
+        rotation: 0,
+        filter:
+          "drop-shadow(0 50px 100px rgba(0,27,77,0.8)) drop-shadow(0 0 60px rgba(0,150,255,0.2))", // Holographic glow
+        ease: "power2.inOut",
+      });
+
+      // -- ANIMATION 3: Inside The Lab --
+      const labTl = gsap.timeline({
+        scrollTrigger: {
+          trigger: "#s-lab",
+          start: "top top",
+          end: "bottom bottom",
+          scrub: 1,
+        },
+      });
+      gsap.to(can, {
+        scrollTrigger: {
+          trigger: "#s-lab",
+          start: "top top",
+          end: "bottom bottom",
+          scrub: 1,
+          immediateRender: false,
+        },
+        y: "-8vh",
+        rotation: 6,
+        ease: "sine.inOut",
+      });
+
+      gsap.set(["#card-1", "#card-2", "#card-3"], {
+        opacity: 0,
+        x: (i) => (i % 2 === 0 ? -30 : 30),
+        filter: "blur(10px)",
+      });
+      labTl
+        .to("#card-1", { opacity: 1, x: 0, filter: "blur(0px)", duration: 1 })
+        .to(
+          "#card-1",
+          { opacity: 0, x: -30, filter: "blur(10px)", duration: 1 },
+          "+=0.5",
+        )
+        .to("#card-2", { opacity: 1, x: 0, filter: "blur(0px)", duration: 1 })
+        .to(
+          "#card-2",
+          { opacity: 0, x: 30, filter: "blur(10px)", duration: 1 },
+          "+=0.5",
+        )
+        .to("#card-3", { opacity: 1, x: 0, filter: "blur(0px)", duration: 1 })
+        .to(
+          "#card-3",
+          { opacity: 0, x: 30, filter: "blur(10px)", duration: 1 },
+          "+=0.5",
+        );
+
+      // -- ANIMATION 4: Lab to Sports (Horizontal) --
+      let panels = gsap.utils.toArray("#sports-container > div");
+      gsap.to(panels, {
+        xPercent: -100 * (panels.length - 1),
+        ease: "none",
+        scrollTrigger: {
+          trigger: "#s-sports",
+          pin: true,
+          scrub: 1,
+          end: () =>
+            "+=" + document.querySelector("#sports-container").offsetWidth,
+        },
+      });
+
+      gsap.to(can, {
+        scrollTrigger: {
+          trigger: "#s-sports",
+          start: "top bottom",
+          end: "top top",
+          scrub: 1,
+          immediateRender: false,
+        },
+        scale: 0.85,
+        x: "-40vw",
+        rotation: 90,
+        filter: "drop-shadow(30px 20px 40px rgba(0,0,0,0.9))",
+        ease: "power2.inOut",
+      });
+
+      gsap.to(can, {
+        scrollTrigger: {
+          trigger: "#s-sports",
+          start: "top top",
+          end: () =>
+            "+=" + document.querySelector("#sports-container").offsetWidth,
+          scrub: 1,
+          immediateRender: false,
+        },
+        x: "40vw",
+        rotation: 450,
+        ease: "none",
+      });
+
+      // -- ANIMATION 5: Sports to Music --
+      gsap.to(can, {
+        scrollTrigger: {
+          trigger: "#s-music",
+          start: "top bottom",
+          end: "center center",
+          scrub: 1,
+          immediateRender: false,
+        },
+        scale: 1.1,
+        x: "0vw",
+        rotation: 0,
+        filter: "drop-shadow(0 0 60px rgba(255,255,255,0.1))",
+        ease: "power2.inOut",
+      });
+
+      gsap.to(can, {
+        scrollTrigger: {
+          trigger: "#s-music",
+          start: "center center",
+          end: "bottom center",
+          scrub: 1,
+          immediateRender: false,
+        },
+        scale: 1.35,
+        filter: "drop-shadow(0 0 100px rgba(255,255,255,0.4))",
+        ease: "elastic.out(1, 0.5)",
+      });
+
+      // -- ANIMATION 6: Music to Eco --
+      gsap.to(can, {
+        scrollTrigger: {
+          trigger: "#s-eco",
+          start: "top bottom",
+          end: "center center",
+          scrub: 1,
+          immediateRender: false,
+        },
+        scale: 0.8,
+        x: "25vw",
+        rotation: 12,
+        filter:
+          "drop-shadow(0 30px 60px rgba(0,255,102,0.15)) drop-shadow(0 0 30px rgba(0,255,102,0.3))",
+        ease: "power2.inOut",
+      });
+
+      // -- ANIMATION 7: Eco to Footer --
+      gsap.to(can, {
+        scrollTrigger: {
+          trigger: "#s-footer",
+          start: "top bottom",
+          end: "center center",
+          scrub: 1,
+          immediateRender: false,
+        },
+        scale: 1.9,
+        x: "0vw",
+        y: "-8vh",
+        rotation: 0,
+        filter:
+          "drop-shadow(0 0 150px rgba(225,6,0,0.9)) drop-shadow(0 0 50px rgba(225,6,0,0.5))", // Extreme red glow
+        ease: "back.out(1.2)",
+      });
+
+      // Footer Aura expansion
+      gsap.to("#footer-aura", {
+        scrollTrigger: {
+          trigger: "#s-footer",
+          start: "center bottom",
+          end: "bottom bottom",
+          scrub: 1,
+        },
+        scale: 1.5,
+        opacity: 0.5,
+      });
+    </script>
+  </body>
+</html>
