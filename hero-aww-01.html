@@ -1,0 +1,957 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ÆTHER | Scrollytelling Master Build</title>
+
+    <!-- Ultra-Premium Editorial Typography -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Manrope:wght@200;300;400&display=swap"
+      rel="stylesheet"
+    />
+
+    <style>
+      /* --- 1. CORE SYSTEM & RESET --- */
+      :root {
+        --bg-dark: #050505;
+        --bg-darker: #020202;
+        --bg-light: #ebe7e0;
+        --text-light: #f4f0ea;
+        --text-dark: #0f0f0f;
+        --accent: #a38c63;
+        /* Ultra-luxury high-fashion pairing */
+        --font-hero: "Cormorant Garamond", serif;
+        --font-display: "Manrope", sans-serif;
+        --font-body: "Manrope", sans-serif;
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body,
+      html {
+        width: 100%; /* Prevents horizontal scrollbar */
+        background-color: var(--bg-dark);
+        color: var(--text-light);
+        font-family: var(--font-body);
+        cursor: none;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+        overscroll-behavior: none;
+        overflow-x: hidden;
+      }
+
+      html.lenis,
+      html.lenis body {
+        height: auto;
+      }
+      .lenis.lenis-smooth {
+        scroll-behavior: auto !important;
+      }
+      .lenis.lenis-smooth [data-lenis-prevent] {
+        overscroll-behavior: contain;
+      }
+      .lenis.lenis-stopped {
+        overflow: hidden;
+      }
+
+      .hw-accel {
+        will-change: transform, opacity;
+        transform: translateZ(0);
+      }
+      .clip-hidden {
+        overflow: hidden;
+      }
+
+      /* --- 2. AMBIENCE & CURSOR --- */
+      .noise {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100vh;
+        pointer-events: none;
+        z-index: 9998;
+        opacity: 0.04;
+        mix-blend-mode: overlay;
+        background: url('data:image/svg+xml;utf8,%3Csvg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"%3E%3Cfilter id="n"%3E%3CfeTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="3" stitchTiles="stitch"/%3E%3C/filter%3E%3Crect width="100%25" height="100%25" filter="url(%23n)"/%3E%3C/svg%3E');
+      }
+
+      .cursor-dot {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 8px;
+        height: 8px;
+        background: #fff;
+        border-radius: 50%;
+        pointer-events: none;
+        z-index: 10000;
+        transform: translate(-50%, -50%);
+        mix-blend-mode: difference;
+      }
+
+      .cursor-ring {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 40px;
+        height: 40px;
+        border: 1px solid rgba(255, 255, 255, 0.4);
+        border-radius: 50%;
+        pointer-events: none;
+        z-index: 9999;
+        transform: translate(-50%, -50%);
+        transition: width 0.3s cubic-bezier(0.25, 1, 0.5, 1),
+          height 0.3s cubic-bezier(0.25, 1, 0.5, 1), background 0.3s;
+        mix-blend-mode: difference;
+      }
+      .cursor-ring.active {
+        width: 80px;
+        height: 80px;
+        background: #fff;
+        mix-blend-mode: difference;
+        border-color: transparent;
+      }
+
+      /* --- 3. LOADER --- */
+      .loader {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100vh;
+        background: var(--bg-dark);
+        z-index: 9997;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+      }
+      .loader-counter {
+        font-family: var(--font-hero);
+        font-style: italic;
+        font-size: max(8vw, 70px);
+        font-weight: 300;
+        line-height: 1;
+        letter-spacing: -0.02em;
+        color: var(--text-light);
+      }
+      .loader-bar-wrap {
+        width: max(20vw, 200px);
+        height: 1px;
+        background: rgba(255, 255, 255, 0.15);
+        margin-top: 30px;
+        position: relative;
+      }
+      .loader-bar {
+        position: absolute;
+        top: 0;
+        left: 0;
+        height: 100%;
+        width: 0%;
+        background: var(--text-light);
+      }
+
+      /* --- 4. NAVIGATION --- */
+      nav {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        padding: 2vw 4vw;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        z-index: 100;
+        mix-blend-mode: difference;
+        color: #fff;
+      }
+      .logo {
+        font-family: var(--font-hero);
+        font-size: clamp(22px, 2vw, 30px);
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        font-weight: 400;
+      }
+      .nav-links {
+        display: flex;
+        gap: 2.5vw;
+      }
+
+      .magnetic-hitbox {
+        padding: 20px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .nav-link {
+        font-family: var(--font-display);
+        font-size: 10px;
+        font-weight: 400;
+        text-transform: uppercase;
+        pointer-events: none;
+        letter-spacing: 0.2em;
+      }
+
+      /* --- 5. THE JOURNEY (CROSS-SECTION SCROLLYTELLING) --- */
+      .product-journey {
+        position: relative;
+        width: 100%;
+      }
+
+      .pinned-bottle-wrap {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 10;
+        pointer-events: none;
+        perspective: 1200px;
+      }
+      .hero-img-container {
+        width: min(35vw, 450px);
+        aspect-ratio: 3/4;
+        transform-style: preserve-3d;
+        will-change: transform, border-radius;
+      }
+      .hero-img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        border-radius: 200px 200px 0 0;
+        filter: brightness(0.85) contrast(1.1);
+        will-change: border-radius;
+      }
+
+      /* Section 1: Initial Hero */
+      .hero-1 {
+        height: 100vh;
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        position: relative;
+        z-index: 1;
+        background: var(--bg-dark);
+      }
+
+      /* REMOVED mix-blend-mode so text is 100% crisp and visible against the dark background */
+      .hero-title-wrap {
+        position: absolute;
+        width: 100%;
+        text-align: center;
+        pointer-events: none;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+      }
+      .hero-title {
+        font-family: var(--font-hero);
+        font-weight: 300;
+        font-size: clamp(80px, 16vw, 260px);
+        line-height: 0.8;
+        text-transform: uppercase;
+        letter-spacing: -0.02em;
+        color: var(--text-light);
+      }
+      .ht-line {
+        display: block;
+        overflow: hidden;
+      }
+
+      /* Staggered layout for high-end editorial feel */
+      .ht-line:nth-child(1) {
+        transform: translateX(-6vw);
+      }
+      .ht-line:nth-child(2) {
+        transform: translateX(6vw);
+      }
+      .ht-word {
+        display: inline-block;
+        transform: translateY(110%);
+      }
+
+      /* Section 2: Product Details */
+      .hero-2 {
+        height: 100vh;
+        width: 100%;
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
+        padding-right: 12vw;
+        position: relative;
+        z-index: 2;
+        background: var(--bg-darker);
+        box-shadow: 0 -20px 50px rgba(0, 0, 0, 0.5);
+      }
+      .product-details {
+        width: 35vw;
+        z-index: 5;
+        color: var(--text-light);
+      }
+      .pd-label {
+        font-family: var(--font-display);
+        color: var(--accent);
+        font-size: 10px;
+        text-transform: uppercase;
+        letter-spacing: 0.25em;
+        margin-bottom: 24px;
+        font-weight: 400;
+      }
+      .pd-title {
+        font-family: var(--font-hero);
+        font-weight: 300;
+        font-size: clamp(45px, 6vw, 90px);
+        line-height: 0.9;
+        margin-bottom: 30px;
+        letter-spacing: -0.02em;
+      }
+      .pd-desc {
+        font-family: var(--font-body);
+        font-weight: 300;
+        font-size: clamp(14px, 1vw, 16px);
+        line-height: 1.8;
+        opacity: 0.6;
+        margin-bottom: 40px;
+        max-width: 90%;
+      }
+
+      .btn-visual {
+        width: 120px;
+        height: 120px;
+        border-radius: 50%;
+        background: #fff;
+        color: #000;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        font-family: var(--font-display);
+        font-size: 10px;
+        font-weight: 400;
+        text-transform: uppercase;
+        letter-spacing: 0.15em;
+        pointer-events: none;
+      }
+
+      /* --- 6. SINGULARITY (CLIP-PATH EXPANSION) --- */
+      .singularity-wrap {
+        position: relative;
+        height: 100vh;
+        width: 100%;
+        background: var(--bg-darker);
+        overflow: hidden;
+        z-index: 3;
+      }
+      .singularity-inner {
+        position: absolute;
+        top: 0;
+        left: 0;
+        height: 100%;
+        width: 100%;
+        background: var(--bg-light);
+        color: var(--text-dark);
+        clip-path: circle(0% at 50% 50%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+      }
+      .s-content {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        width: 85%;
+        max-width: 1600px;
+        gap: 5vw;
+      }
+      .s-text {
+        width: 45%;
+      }
+      .s-text h2,
+      .s-head {
+        font-family: var(--font-hero);
+        font-weight: 300;
+        font-size: clamp(60px, 8vw, 130px);
+        line-height: 0.9;
+        margin-bottom: 30px;
+        letter-spacing: -0.02em;
+      }
+      .s-text p,
+      .s-p {
+        font-family: var(--font-body);
+        font-size: clamp(14px, 1.1vw, 18px);
+        line-height: 1.8;
+        color: var(--text-dark);
+        opacity: 0.75;
+        margin-bottom: 40px;
+        font-weight: 300;
+      }
+      .s-image {
+        width: 45%;
+        height: 75vh;
+        border-radius: 20px;
+        overflow: hidden;
+      }
+      .s-image img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transform: scale(1.2);
+      }
+      .btn-visual-dark {
+        background: var(--text-dark);
+        color: var(--bg-light);
+      }
+
+      /* --- 7. 3D HORIZONTAL SHOWCASE --- */
+      .showcase-wrap {
+        height: 100vh;
+        width: 100%;
+        background: var(--bg-dark);
+        overflow: hidden;
+        position: relative;
+        z-index: 1;
+      }
+      .showcase-track {
+        display: flex;
+        height: 100%;
+        width: max-content;
+        align-items: center;
+        padding: 0 30vw;
+        gap: 10vw;
+      }
+      .product-card {
+        width: min(30vw, 400px);
+        aspect-ratio: 4/5;
+        position: relative;
+        transform-style: preserve-3d;
+        perspective: 1000px;
+      }
+      .product-img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        filter: grayscale(100%);
+        transition: filter 0.8s ease;
+      }
+      .product-card:hover .product-img {
+        filter: grayscale(0%);
+      }
+      .product-info {
+        position: absolute;
+        bottom: -8%;
+        left: -10%;
+        z-index: 10;
+        font-family: var(--font-hero);
+        font-weight: 300;
+        font-size: clamp(35px, 5vw, 90px);
+        color: var(--text-light);
+        text-transform: uppercase;
+        letter-spacing: -0.02em;
+        pointer-events: none;
+      }
+
+      /* --- 8. FOOTER --- */
+      footer {
+        height: 100vh;
+        width: 100%;
+        background: var(--bg-light);
+        color: var(--text-dark);
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        position: relative;
+        overflow: hidden;
+        z-index: 1;
+      }
+      .footer-huge {
+        font-family: var(--font-hero);
+        font-weight: 300;
+        font-size: clamp(100px, 23vw, 450px);
+        line-height: 0.8;
+        text-transform: uppercase;
+        display: flex;
+        letter-spacing: -0.05em;
+      }
+      .char {
+        display: inline-block;
+        will-change: transform, opacity;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="noise"></div>
+    <div class="cursor-dot"></div>
+    <div class="cursor-ring"></div>
+
+    <!-- PRELOADER -->
+    <div class="loader">
+      <div class="loader-counter">00</div>
+      <div class="loader-bar-wrap"><div class="loader-bar"></div></div>
+    </div>
+
+    <!-- NAV -->
+    <nav>
+      <div class="logo">Æther</div>
+      <div class="nav-links">
+        <div class="magnetic-hitbox" data-strength="30">
+          <div class="nav-link">Boutique</div>
+        </div>
+        <div class="magnetic-hitbox" data-strength="30">
+          <div class="nav-link">Philosophy</div>
+        </div>
+        <div class="magnetic-hitbox" data-strength="30">
+          <div class="nav-link">Cart (0)</div>
+        </div>
+      </div>
+    </nav>
+
+    <!-- 1. THE CROSS-SECTION JOURNEY -->
+    <div class="product-journey">
+      <!-- The Floating Pinned Bottle -->
+      <div class="pinned-bottle-wrap">
+        <div class="hero-img-container hw-accel">
+          <img
+            class="hero-img"
+            src="https://i.postimg.cc/vT2zSvsb/Chat-GPT-Image-Jun-25-2026-05-36-30-PM.png"
+            alt="Quantum Botanical"
+          />
+        </div>
+      </div>
+
+      <!-- Section 1 (Initial Hero Text) -->
+      <section class="hero-1">
+        <div class="hero-title-wrap">
+          <h1 class="hero-title">
+            <span class="ht-line"><span class="ht-word">Quantum</span></span>
+            <!-- Staggered italic addition for premium aesthetic -->
+            <span class="ht-line"
+              ><span
+                class="ht-word"
+                style="font-style: italic; font-weight: 300;"
+                >Botanical</span
+              ></span
+            >
+          </h1>
+        </div>
+      </section>
+
+      <!-- Section 2 (New Layout Sweeps Up) -->
+      <section class="hero-2">
+        <div class="product-details">
+          <div class="pd-label">Phase I Synthesis</div>
+          <h2 class="pd-title">
+            Invisible<br /><span style="font-style: italic;"
+              >Fluid SPF 50+</span
+            >
+          </h2>
+          <p class="pd-desc">
+            Scientifically formulated for ultra-resistant defense. A
+            lightweight, non-greasy shield that absorbs instantly, offering
+            profound cellular protection against daily environmental aggression.
+          </p>
+          <div
+            class="magnetic-hitbox"
+            style="margin-left: -20px;"
+            data-strength="40"
+          >
+            <div class="btn-visual">Add to<br />Cart</div>
+          </div>
+        </div>
+      </section>
+    </div>
+    <!-- End Journey -->
+
+    <!-- 2. SINGULARITY CLIP-PATH -->
+    <section class="singularity-wrap">
+      <div class="singularity-inner hw-accel">
+        <div class="s-content">
+          <div class="s-text">
+            <h2 class="s-head">
+              Defying<br /><span style="font-style: italic;">Gravity</span>
+            </h2>
+            <p class="s-p">
+              Operating at a molecular level, our serums extract the raw, vital
+              energy of nature. Experience skincare that transcends physical
+              limits.
+            </p>
+            <div
+              class="magnetic-hitbox"
+              style="margin-left: -20px;"
+              data-strength="50"
+            >
+              <div class="btn-visual btn-visual-dark">Discover</div>
+            </div>
+          </div>
+          <div class="s-image clip-hidden">
+            <img
+              class="s-img-inner hw-accel"
+              src="https://images.unsplash.com/photo-1598440947619-2c35fc9aa908?q=80&w=1200"
+              alt="Serum"
+            />
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3. 3D HORIZONTAL SHOWCASE -->
+    <section class="showcase-wrap">
+      <div class="showcase-track">
+        <div class="product-card">
+          <img
+            class="product-img"
+            src="https://images.unsplash.com/photo-1620916566398-39f1143ab7be?q=80&w=1200"
+            alt="Elixir 1"
+          />
+          <div class="product-info">
+            <span style="font-style: italic;">01.</span> Void
+          </div>
+        </div>
+        <div class="product-card">
+          <img
+            class="product-img"
+            src="https://images.unsplash.com/photo-1608248543803-ba4f8c70ae0b?q=80&w=1200"
+            alt="Elixir 2"
+          />
+          <div class="product-info">
+            <span style="font-style: italic;">02.</span> Nebula
+          </div>
+        </div>
+        <div class="product-card">
+          <img
+            class="product-img"
+            src="https://images.unsplash.com/photo-1617897903246-719242758050?q=80&w=1200"
+            alt="Elixir 3"
+          />
+          <div class="product-info">
+            <span style="font-style: italic;">03.</span> Pulsar
+          </div>
+        </div>
+        <div class="product-card">
+          <img
+            class="product-img"
+            src="https://images.unsplash.com/photo-1556228578-0d85b1a4d571?q=80&w=1200"
+            alt="Elixir 4"
+          />
+          <div class="product-info">
+            <span style="font-style: italic;">04.</span> Aura
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 4. KINEMATIC FOOTER -->
+    <footer>
+      <div class="footer-huge">
+        <span class="char">Æ</span><span class="char">T</span
+        ><span class="char">H</span><span class="char">E</span
+        ><span class="char">R</span>
+      </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/gh/studio-freight/lenis@1.0.29/bundled/lenis.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+
+    <script>
+      gsap.registerPlugin(ScrollTrigger);
+
+      // --- LENIS SMOOTH SCROLL ---
+      const lenis = new Lenis({
+        duration: 1.5,
+        easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+        smooth: true,
+      });
+
+      lenis.stop();
+      lenis.on("scroll", ScrollTrigger.update);
+      gsap.ticker.add((time) => {
+        lenis.raf(time * 1000);
+      });
+      gsap.ticker.lagSmoothing(0);
+
+      // --- MAGNETIC CURSOR ---
+      const cursorDot = document.querySelector(".cursor-dot");
+      const cursorRing = document.querySelector(".cursor-ring");
+      let mouse = { x: window.innerWidth / 2, y: window.innerHeight / 2 };
+      let ringPos = { x: window.innerWidth / 2, y: window.innerHeight / 2 };
+
+      window.addEventListener("mousemove", (e) => {
+        mouse.x = e.clientX;
+        mouse.y = e.clientY;
+        gsap.set(cursorDot, { x: mouse.x, y: mouse.y });
+      });
+
+      gsap.ticker.add(() => {
+        ringPos.x += (mouse.x - ringPos.x) * 0.15;
+        ringPos.y += (mouse.y - ringPos.y) * 0.15;
+        gsap.set(cursorRing, { x: ringPos.x, y: ringPos.y });
+      });
+
+      document.querySelectorAll(".magnetic-hitbox").forEach((hitbox) => {
+        const target = hitbox.firstElementChild;
+        const strength = hitbox.dataset.strength || 30;
+        hitbox.addEventListener("mousemove", (e) => {
+          const bound = hitbox.getBoundingClientRect();
+          const x =
+            (e.clientX - bound.left - bound.width / 2) * (strength / 100);
+          const y =
+            (e.clientY - bound.top - bound.height / 2) * (strength / 100);
+          gsap.to(target, { x, y, duration: 0.5, ease: "power3.out" });
+          cursorRing.classList.add("active");
+        });
+        hitbox.addEventListener("mouseleave", () => {
+          gsap.to(target, {
+            x: 0,
+            y: 0,
+            duration: 0.7,
+            ease: "elastic.out(1, 0.3)",
+          });
+          cursorRing.classList.remove("active");
+        });
+      });
+
+      // --- LOADER ---
+      window.addEventListener("load", () => {
+        const counter = document.querySelector(".loader-counter");
+        let loadObj = { val: 0 };
+
+        const tlLoad = gsap.timeline({
+          onComplete: () => {
+            lenis.start();
+            ScrollTrigger.refresh();
+            document.querySelector(".loader").style.display = "none";
+          },
+        });
+
+        tlLoad
+          .to(
+            loadObj,
+            {
+              val: 100,
+              duration: 2,
+              ease: "power2.inOut",
+              onUpdate: () => {
+                counter.innerText = Math.round(loadObj.val)
+                  .toString()
+                  .padStart(2, "0");
+              },
+            },
+            0,
+          )
+          .to(
+            ".loader-bar",
+            { width: "100%", duration: 2, ease: "power2.inOut" },
+            0,
+          )
+          .to(
+            ".loader",
+            { yPercent: -100, duration: 1.2, ease: "expo.inOut" },
+            "+=0.1",
+          )
+          .from(
+            ".hero-img-container",
+            { scale: 1.4, duration: 2, ease: "power3.out" },
+            "-=0.8",
+          )
+          .to(
+            ".ht-word",
+            { y: "0%", stagger: 0.1, duration: 1.2, ease: "power4.out" },
+            "-=1.5",
+          );
+      });
+
+      // --- THE CROSS-SECTION BOTTLE JOURNEY ---
+      const journeyWrap = document.querySelector(".product-journey");
+      const bottleWrap = document.querySelector(".pinned-bottle-wrap");
+      const bottleContainer = document.querySelector(".hero-img-container");
+      const bottleImg = document.querySelector(".hero-img");
+
+      let parallaxEnabled = true;
+
+      // Interactive 3D tilt while in Hero 1
+      journeyWrap.addEventListener("mousemove", (e) => {
+        if (!parallaxEnabled) return;
+        const xAxis = (window.innerWidth / 2 - e.pageX) / 30;
+        const yAxis = (window.innerHeight / 2 - e.pageY) / 30;
+        gsap.to(bottleContainer, {
+          rotationY: xAxis,
+          rotationX: yAxis,
+          x: -xAxis,
+          y: -yAxis,
+          duration: 1,
+          ease: "power2.out",
+        });
+      });
+      journeyWrap.addEventListener("mouseleave", () => {
+        if (!parallaxEnabled) return;
+        gsap.to(bottleContainer, {
+          rotationY: 0,
+          rotationX: 0,
+          x: 0,
+          y: 0,
+          duration: 1.5,
+          ease: "elastic.out(1, 0.3)",
+        });
+      });
+
+      // 1. PIN THE BOTTLE OVER THE WHOLE JOURNEY
+      ScrollTrigger.create({
+        trigger: ".product-journey",
+        start: "top top",
+        end: "bottom bottom", // Unpins exactly when Hero-2 finishes scrolling up
+        pin: ".pinned-bottle-wrap",
+        pinSpacing: false, // Allows natural scrolling of the sections underneath
+      });
+
+      // 2. ANIMATE THE BOTTLE DRIVING INTO HERO-2
+      gsap.to(bottleContainer, {
+        x: "-22vw", // Drive to the left side
+        scale: 1.15,
+        rotationX: 0,
+        rotationY: 0, // Force neutralize 3D tilt
+        scrollTrigger: {
+          trigger: ".hero-2", // Animation starts when Hero 2 sweeps onto screen
+          start: "top bottom", // Top of Hero-2 hits bottom of viewport
+          end: "top top", // Top of Hero-2 hits top of viewport
+          scrub: 1,
+          onUpdate: (self) => {
+            parallaxEnabled = self.progress === 0;
+          }, // Lock 3D tilt instantly
+        },
+      });
+
+      // Morph the bottle border-radius dynamically
+      gsap.to(bottleImg, {
+        borderRadius: "20px",
+        scrollTrigger: {
+          trigger: ".hero-2",
+          start: "top bottom",
+          end: "top top",
+          scrub: 1,
+        },
+      });
+
+      // Fade in details on Hero-2
+      gsap.from(".product-details", {
+        y: 50,
+        opacity: 0,
+        scrollTrigger: {
+          trigger: ".hero-2",
+          start: "top 60%", // Triggers when section is comfortably on screen
+          end: "top 30%",
+          scrub: 1,
+        },
+      });
+
+      // --- SINGULARITY EXPANSION ---
+      const singTimeline = gsap.timeline({
+        scrollTrigger: {
+          trigger: ".singularity-wrap",
+          start: "top top",
+          end: "+=150%",
+          scrub: 1,
+          pin: true,
+          pinSpacing: true,
+        },
+      });
+      singTimeline
+        .to(".singularity-inner", {
+          clipPath: "circle(150% at 50% 50%)",
+          ease: "none",
+        })
+        .fromTo(".s-img-inner", { scale: 1.2 }, { scale: 1, ease: "none" }, 0);
+
+      // --- 3D HORIZONTAL SHOWCASE ---
+      const showcaseTrack = document.querySelector(".showcase-track");
+      const cards = gsap.utils.toArray(".product-card");
+      let tlShowcase = gsap.timeline({
+        scrollTrigger: {
+          trigger: ".showcase-wrap",
+          pin: true,
+          scrub: 1,
+          end: () => "+=" + showcaseTrack.scrollWidth,
+        },
+      });
+      tlShowcase.to(showcaseTrack, {
+        x: () => -(showcaseTrack.scrollWidth - window.innerWidth),
+        ease: "none",
+      });
+
+      cards.forEach((card) => {
+        gsap.fromTo(
+          card,
+          { rotationY: 45, scale: 0.85, opacity: 0.3 },
+          {
+            rotationY: -45,
+            scale: 0.85,
+            opacity: 0.3,
+            ease: "none",
+            scrollTrigger: {
+              trigger: ".showcase-wrap",
+              start: "top top",
+              end: () => "+=" + showcaseTrack.scrollWidth,
+              scrub: true,
+              containerAnimation: tlShowcase,
+            },
+          },
+        );
+        gsap.to(card, {
+          rotationY: 0,
+          scale: 1,
+          opacity: 1,
+          scrollTrigger: {
+            trigger: card,
+            containerAnimation: tlShowcase,
+            start: "left center+=25%",
+            end: "right center-=25%",
+            scrub: 1,
+            yoyo: true,
+            repeat: 1,
+          },
+        });
+      });
+
+      // --- KINEMATIC FOOTER ---
+      const footerChars = gsap.utils.toArray(".footer-huge .char");
+      const centerIndex = Math.floor(footerChars.length / 2);
+      gsap.from(footerChars, {
+        yPercent: 150,
+        opacity: 0,
+        rotationX: 90,
+        stagger: 0.1,
+        duration: 1.5,
+        ease: "power4.out",
+        scrollTrigger: { trigger: "footer", start: "top 70%" },
+      });
+      footerChars.forEach((char, i) => {
+        const distance = (i - centerIndex) * 4;
+        gsap.to(char, {
+          x: `${distance}vw`,
+          scrollTrigger: {
+            trigger: "footer",
+            start: "top bottom",
+            end: "bottom bottom",
+            scrub: true,
+          },
+        });
+      });
+    </script>
+  </body>
+</html>

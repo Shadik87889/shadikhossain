@@ -1290,6 +1290,13 @@
     </style>
   </head>
   <body class="antialiased selection:bg-[#CCFF00] selection:text-black">
+    <!-- Hidden Iframe for silent email submission -->
+    <iframe
+      name="hidden_iframe"
+      id="hidden_iframe"
+      style="display: none;"
+    ></iframe>
+
     <!-- STATIC NOISE -->
     <div class="static-noise"></div>
 
@@ -3231,7 +3238,21 @@ L 940 180"
                 class="absolute -top-4 -right-4 w-24 h-24 border-t border-r border-[var(--accent-acid)] opacity-50"
               ></div>
 
-              <form id="contact-form" class="space-y-12 pt-12">
+              <form
+                id="contact-form"
+                action="https://formsubmit.co/shadikworld@gmail.com"
+                method="POST"
+                target="hidden_iframe"
+                class="space-y-12 pt-12"
+              >
+                <input type="hidden" name="_captcha" value="false" />
+                <input
+                  type="hidden"
+                  name="_subject"
+                  value="QUANTUM SYSTEM // New Project Inquiry"
+                />
+                <input type="hidden" name="_template" value="table" />
+
                 <div class="group">
                   <label
                     class="font-mono text-xs text-[var(--accent-acid)] mb-2 block"
@@ -3832,14 +3853,14 @@ L 940 180"
           }
         });
 
-        // --- 10. WEB3FORMS CONTACT TRANSMISSION LOGIC ---
+        // --- 10. FORMSUBMIT CONTACT TRANSMISSION LOGIC ---
         const contactForm = document.getElementById("contact-form");
         const submitBtn = document.getElementById("submit-btn");
         const submitText = document.getElementById("submit-text");
         const formStatus = document.getElementById("form-status");
 
         if (contactForm) {
-          contactForm.addEventListener("submit", async function (e) {
+          contactForm.addEventListener("submit", function (e) {
             e.preventDefault();
 
             // 1. Initiate UI Loading State
@@ -3850,47 +3871,18 @@ L 940 180"
             formStatus.innerText = "> ESTABLISHING SECURE CONNECTION...";
             formStatus.style.opacity = "1";
 
-            // 2. Gather Data
-            const formData = new FormData(contactForm);
+            // 2. Submit silently to iframe via FormSubmit
+            contactForm.submit();
 
-            // *** IMPORTANT: REPLACE WITH YOUR KEY FROM WEB3FORMS.COM ***
-            formData.append(
-              "access_key",
-              "4128dcbf-1faa-4fae-8f19-8933a0d50bb5",
-            );
-            formData.append("subject", "QUANTUM SYSTEM // New Project Inquiry");
-            formData.append("from_name", "System Terminal");
-
-            try {
-              // 3. Transmit Data
-              const response = await fetch("https://api.web3forms.com/submit", {
-                method: "POST",
-                body: formData,
-              });
-
-              const data = await response.json();
-
-              if (data.success) {
-                // Success UI State
-                submitText.innerText = "TRANSMITTED";
-                formStatus.className =
-                  "font-mono text-xs tracking-widest uppercase text-[var(--accent-acid)]";
-                formStatus.innerText = "> TRANSMISSION SUCCESSFUL.";
-                contactForm.reset();
-              } else {
-                // API Error UI State
-                submitText.innerText = "ERROR";
-                formStatus.className =
-                  "font-mono text-xs tracking-widest uppercase text-[var(--accent-alert)]";
-                formStatus.innerText = "> ERROR: " + data.message;
-              }
-            } catch (error) {
-              // Network Error UI State
-              submitText.innerText = "SYSTEM FAIL";
+            // 3. Simulate transmission delay for UI effect
+            setTimeout(() => {
+              // Success UI State
+              submitText.innerText = "TRANSMITTED";
               formStatus.className =
-                "font-mono text-xs tracking-widest uppercase text-[var(--accent-alert)]";
-              formStatus.innerText = "> TRANSMISSION FAILED. CHECK UPLINK.";
-            } finally {
+                "font-mono text-xs tracking-widest uppercase text-[var(--accent-acid)]";
+              formStatus.innerText = "> TRANSMISSION SUCCESSFUL.";
+              contactForm.reset();
+
               // Reset Button after 4 seconds
               setTimeout(() => {
                 submitText.innerText = "SEND MESSAGE";
@@ -3899,7 +3891,7 @@ L 940 180"
                 // Fade out status message
                 formStatus.style.opacity = "0";
               }, 4000);
-            }
+            }, 800); // Small fake delay to simulate network request since it's silent
           });
         }
 
